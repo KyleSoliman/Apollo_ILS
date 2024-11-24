@@ -3,6 +3,14 @@ const ptBR = {
     title: 'Aplicação',
   },
 
+  entities: {
+    loan: {
+      validation: {
+        returnDateRequired: 'Return Date is required',
+      },
+    },
+  },
+
   auth: {
     userDisabled: 'Sua conta está desativada',
     userNotFound: `Desculpe, não reconhecemos suas credenciais`,

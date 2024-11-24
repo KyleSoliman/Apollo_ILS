@@ -39,6 +39,12 @@ module.exports = class LoanService {
   }
 
   async update(id, data) {
+    if(!data.returnDate){
+      throw new ValidationError(this.language, 'entities.loan.validation.returnDateRequired');
+
+    }
+
+    
     const transaction = await AbstractRepository.createTransaction();
 
     try {

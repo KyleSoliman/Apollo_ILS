@@ -49,6 +49,7 @@
             <app-autocomplete-one-input
               :fetchFn="fields.book.fetchFn"
               v-model="model[fields.book.name]"
+              :disabled="isEditing"
             ></app-autocomplete-one-input>
           </el-col>
         </el-form-item>
@@ -62,6 +63,7 @@
             <app-autocomplete-one-input
               :fetchFn="fields.member.fetchFn"
               v-model="model[fields.member.name]"
+              :disabled="isEditing"
             ></app-autocomplete-one-input>
           </el-col>
         </el-form-item>
@@ -76,7 +78,8 @@
             @change="onIssueDateChange"
             placeholder
             type="datetime"
-            v-model="model[fields.issueDate.name]"></el-date-picker>
+            v-model="model[fields.issueDate.name]" :disabled="isEditing"></el-date-picker>
+           
           </el-col>
         </el-form-item>
 
@@ -84,9 +87,11 @@
           :label="fields.dueDate.label"
           :prop="fields.dueDate.name"
           :required="fields.dueDate.required"
+          v-if="model.dueDate"
+
         >
           <el-col :lg="11" :md="16" :sm="24">
-            <el-date-picker placeholder type="datetime" v-model="model[fields.dueDate.name]"></el-date-picker>
+            <el-date-picker placeholder type="datetime" v-model="model[fields.dueDate.name]" :disabled="isEditing"></el-date-picker>
           </el-col>
         </el-form-item>
 
@@ -94,6 +99,7 @@
           :label="fields.returnDate.label"
           :prop="fields.returnDate.name"
           :required="fields.returnDate.required"
+          v-if="isEditing"
         >
           <el-col :lg="11" :md="16" :sm="24">
             <el-date-picker @change="onReturnDateChange" placeholder type="datetime" v-model="model[fields.returnDate.name]"></el-date-picker>
@@ -140,7 +146,16 @@ import moment from 'moment';
 import LoanStatusTag from '@/modules/loan/components/loan-status-tag';
 
 const { fields } = LoanModel;
-const formSchema = new FormSchema([
+const newFormSchema = new FormSchema([
+  fields.id,
+  fields.book,
+  fields.member,
+  fields.issueDate,
+  fields.dueDate,
+  fields.status,
+]);
+
+const editFormSchema = new FormSchema([
   fields.id,
   fields.book,
   fields.member,
@@ -160,8 +175,19 @@ export default {
   props: ['id'],
 
   data() {
+    let rules = null;
+    const isEditing = !!this.id;
+
+    if (isEditing) {
+      rules = editFormSchema.rules();
+    }
+
+    if(!isEditing) {
+      rules = newFormSchema.rules();
+    }
+
     return {
-      rules: formSchema.rules(),
+      rules,
       model: null,
     };
   },
@@ -176,6 +202,10 @@ export default {
       findSettingsLoading: 'settings/findLoading',
       loanPeriodInDays: 'settings/loanPeriodInDays',
     }),
+
+    formSchema() {
+      return this.isEditing ? editFormSchema : newFormSchema;
+    },
 
     isEditing() {
       return !!this.id;
@@ -196,7 +226,7 @@ export default {
       await this.doNew();
     }
 
-    this.model = formSchema.initialValues(this.record);
+    this.model = this.formSchema.initialValues(this.record);
   },
 
   methods: {
@@ -233,7 +263,7 @@ export default {
     },
 
     doReset() {
-      this.model = formSchema.initialValues(this.record);
+      this.model = this.formSchema.initialValues(this.record);
     },
 
     async doSubmit() {
@@ -243,7 +273,7 @@ export default {
         return;
       }
 
-      const { id, ...values } = formSchema.cast(this.model);
+      const { id, ...values } = this.formSchema.cast(this.model);
 
       if (this.isEditing) {
         return this.doUpdate({
