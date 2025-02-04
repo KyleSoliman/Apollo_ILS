@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+  app:
+    build: .
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql
+    volumes:
+      - storage:/storage
+  postgres:
+    image: mysql
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - data-volume:/var/lib/mysql/data
+volumes:
+  data-volume:
+  storage:

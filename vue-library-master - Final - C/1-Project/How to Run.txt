@@ -1,0 +1,30 @@
+
+Step 1: Setup the Database Path, must be fully operational.
+
+(XAAMP SETUP)
+  database: {
+    username: 'root', // Use 'root' for XAMPP MySQL
+    dialect: 'mysql', // Change dialect to 'mysql' for XAMPP
+    password: '', // Leave empty if you haven't set a password for XAMPP MySQL
+    database: 'apollodbtest', // Your database name
+    host: 'localhost', // Localhost for XAMPP
+    logging: console.log,
+    operatorsAliases: false,
+    port: 3306, //Dont forget to put the port number
+  }, 
+  
+  (MYSQL SETUP)
+    /* database: {
+     username: 'root',
+     dialect: 'mysql',
+     password: '',
+     database: 'apollodb',
+     host: 'localhost',
+     logging: console.log,
+     operatorsAliases: false,
+   }, */
+
+Step 2: Run Prerequisite.bat file in Admin. 
+Step 3: Run StartApplication.bat file in Admin.
+
+When your done using the library system, Run the final file (EndSession.bat)

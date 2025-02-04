@@ -1,0 +1,1 @@
+start cmd /k "cd backend-sql && npm run db:reset:localhost"

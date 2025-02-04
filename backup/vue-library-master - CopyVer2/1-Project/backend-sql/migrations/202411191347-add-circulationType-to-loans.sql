@@ -1,0 +1,1 @@
+ALTER TABLE `books` ADD `circulationType` ENUM('Circulation Collection', 'Reference Collection') NULL DEFAULT NULL AFTER `updatedById`;

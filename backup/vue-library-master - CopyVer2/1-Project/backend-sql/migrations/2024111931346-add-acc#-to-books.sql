@@ -1,0 +1,1 @@
+ALTER TABLE `books` ADD `accession_number` VARCHAR`;
